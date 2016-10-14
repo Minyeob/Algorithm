@@ -4,7 +4,6 @@ using namespace std;
 int length = 4;
 int array[4];
 int b[4];
-int k = 0;
 
 void comp(int aa, int bb);
 
@@ -12,14 +11,19 @@ void merge(int start, int end)
 {
 	int mid = (start + end) / 2;
 
-	if (start==mid)
-		comp(start, end);
+	if (start == end)
+	{
+		return;
+	}
 
 	else
 	{
 		merge(start, mid);
 		merge(mid + 1, end);
 	}
+
+	comp(start, mid);
+	comp(mid + 1, end);
 
 }
 
@@ -30,28 +34,24 @@ void comp(int start, int end)
 		int mid = (start + end) / 2;
 		int i = start;
 		int j = mid + 1;
+		int k = 0;
 
-		printf("initial i is %d, j is %d\n", i, j);
+		printf("initial i is %d, j is %d,start is %d, end is %d\n", i, j,start ,end);
 
 		if (array[i] > array[j])
 		{
 			b[k] = array[j];
 			j++;
-			printf("j is %d\n", j);
-			printf("bk is %d\n",b[k]);
 		}
 		else
 		{
 			b[k] = array[i];
 			i++;
-			printf("i is %d\n", i);
-			printf("bk is %d\n", b[k]);
 		}
 		k++;
 
 		if (i == mid + 1)
-		{
-			
+		{			
 			for (int q = j; q < end + 1; q++)
 			{
 				b[k] = array[j];
@@ -62,7 +62,7 @@ void comp(int start, int end)
 			break;
 		}
 
-		else if (j == end)
+		else if (j > end)
 		{
 			for (int w = i; w < mid + 1; w++)
 			{
@@ -74,6 +74,9 @@ void comp(int start, int end)
 			break;
 		}
 	}
+
+	for (int i = start; i <= end; i++)
+		array[i] = b[i-start];
 }
 
 void copy()
@@ -83,9 +86,9 @@ void copy()
 }
 int main()
 {
-	array[0] = 4;
-	array[1] = 7;
-	array[2] = 2;
+	array[0] = 7;
+	array[1] = 4;
+	array[2] = 5;
 	array[3] = 3;
 	merge(0, 3);
 	copy();
