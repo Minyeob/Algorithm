@@ -13,22 +13,21 @@ int main()
 		for (int j = 0; j < 10; j++)
 		{
 			if (j == 0)
-				array[i][j] = array[i - 1][j];
+				array[i][0] = array[i - 1][0];
 			else
 			{
 				for (int q = 0; q <= j; q++)
 				{
-					array[i][j] = array[i][j] + array[i - 1][q];
+					array[i][j] = (array[i][j] + array[i - 1][q])%10007;
 				}
 			}
 		}
 	}
-
 	long long int sum = 0;
 	for (int i = 0; i < 10; i++)
 	{
 		sum = sum + array[n][i];
 	}
 	sum = sum % 10007;
-	printf("%d", (int)sum);
+	printf("%lld", sum);
 }

@@ -1,23 +1,21 @@
 #include <stdio.h>
 #include <math.h>
 
-int temp[10000000];
-int gcd(int a, int b)
+long long int gcd(long long int a,long long int b)
 {
 	if (b == 0)
 		return a;
-	int r = a%b;
+	long long int r = a%b;
 	a = b;
 	b = r;
-	gcd(a, b);
+	return gcd(a, b);
 }
 
 int main()
 {
 	long long int a, b;
-	scanf("%ld %ld", &a, &b);
+	scanf("%lld %lld", &a, &b);
 	long long int c = gcd(a, b);
 	for (int i = 0; i < c; i++)
-		printf("%d",1);
-
+		printf("1");
 }
