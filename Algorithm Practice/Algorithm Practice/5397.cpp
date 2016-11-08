@@ -12,12 +12,11 @@ int main()
 	stack<char> result;
 	int n;
 	scanf("%d", &n);
-	fflush(stdin);
 	
 	for (int i = 0; i < n; i++)
 	{
-		fgets(str, sizeof(str), stdin);
-		for (int j = 0; j < sizeof(str); j++)
+		scanf("%s", str);
+		for (int j = 0; str[j]; j++)
 		{
 			if (str[j] == '<')
 			{
@@ -64,7 +63,7 @@ int main()
 			result.pop();
 		}
 		cout << endl;
-		fflush(stdin);
-		memset(str, NULL, sizeof(str));
 	}
+
+	return 0;
 }
