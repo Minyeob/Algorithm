@@ -1,18 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
+using namespace std;
 
-int point[1001][1001];
+vector<vector<int>> point;
 int start[1001];
+int check[1001];
 
 void dfs(int start)
 {
-	for (int i = 1; i < 1001; i++)
+	for (int i = 0; i < point[start].size(); i++)
 	{
-		if (point[start][i] == 1)
+		int next = point[start][i];
+		if (!check[next])
 		{
-			point[start][i] = 0;
-			point[i][start] = 0;
-			dfs(i);
+			check[next] = 1;
+			dfs(next);
 		}
 	}
 }
@@ -22,30 +25,23 @@ int main()
 	int node, edge;
 	scanf("%d %d", &node, &edge);
 	int count = 0;
+	point.resize(node + 1);
 
 	for (int i = 0; i < edge; i++)
 	{
 		int a, b;
 		scanf("%d %d", &a, &b);
-		point[a][b] = 1;
-		point[b][a] = 1;
+		point[a].push_back(b);
+		point[b].push_back(a);
 	}
 
-	if (node == 1)
+	for (int i = 1; i < node+1; i++)
 	{
-		printf("1");
-		exit(1);
-	}
-	for (int i = 1; i < node; i++)
-	{
-		for (int j = 1; j < node; j++)
+		if (!check[i])
 		{
-			if (point[i][j]==1)
-			{
-				count++;
-				dfs(i);
-				break;
-			}
+			check[i] = 1;
+			count++;
+			dfs(i);
 		}
 	}
 
