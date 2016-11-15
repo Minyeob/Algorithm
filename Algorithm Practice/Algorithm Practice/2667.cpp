@@ -5,8 +5,8 @@
 using namespace std;
 #include <queue>
 
-vector<vector <char>> v;
-int q[350];
+vector<vector <char> > v;
+int q[400];
 int check[26][26];
 char input[26][26];
 
