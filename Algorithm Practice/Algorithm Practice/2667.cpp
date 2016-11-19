@@ -74,7 +74,8 @@ int main()
 	}
 
 	printf("%d\n", q_count - 1);
-	sort(q+1, q+q_count-1);
+	//c++에서 제공하는 함수는 시작과 끝값을 파라미터로 받을 때 시작이 시작주소, 끝이 시작주소+크기 즉 끝 주소+1
+	sort(q+1, q+q_count);
 	for (int i = 1; i < q_count; i++)
 	{
 		printf("%d\n", q[i]);
