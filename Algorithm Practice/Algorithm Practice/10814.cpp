@@ -7,7 +7,7 @@ using namespace std;
 int age[100005];
 typedef struct{
 	int age;
-	char name[100];
+	char name[105];
 }profile;
 profile ranking[100005];
 char name[100005][105];
