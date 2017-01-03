@@ -1,42 +1,40 @@
-#include <stdio.h>
-#include <algorithm>
+#include <cstdio>
+#include <vector>
 #include <queue>
 using namespace std;
-int point[1001][1001];
+
+vector<vector <int>> vec;
+queue<int> q;
 int check[1001];
 int check2[1001];
-queue<int> q;
 
-void dfs(int start)
+void dfs(int end)
 {
-	printf("%d ", start);
-	check[start] = 1;
+	check[end] = 1;
+	printf("%d ",end);
 
-	for (int i = 0; i < 1001; i++)
+	for (int i = 0; i < vec[end].size(); i++)
 	{
-		if (point[start][i] == 1 && !check[i])
-		{
-			dfs(i);
-		}
+		int next = vec[end][i];
+		if (!check[next])
+			dfs(next);
 	}
 }
 
-void bfs(int start)
-{
-	check2[start] = 1;
-	q.push(start);
-
+void bfs()
+{	
 	while (!q.empty())
 	{
-		int cur = q.front();
+		int now = q.front();
 		q.pop();
-		printf("%d ", cur);
-		for (int i = 0; i < 1001; i++)
+		printf("%d ", now);
+		for (int i = 0; i < vec[now].size(); i++)
 		{
-			if (point[cur][i] == 1 && !check2[i])
+			int next = vec[now][i];
+			if (!check2[next])
 			{
-				q.push(i);
-				check2[i] = 1;
+				q.push(next);
+				check2[next] = 1;
 			}
 		}
 	}
@@ -44,18 +42,21 @@ void bfs(int start)
 
 int main()
 {
-	int node, edge, start;
-	scanf("%d %d %d", &node, &edge, &start);
-	for (int i = 0; i < edge; i++)
+	int n, m, v;
+	scanf("%d %d %d", &n, &m, &v);
+	vec.resize(n + 1);
+
+	for (int i = 0; i < m; i++)
 	{
 		int a, b;
 		scanf("%d %d", &a, &b);
-		point[a][b] = 1;
-		point[b][a] = 1;
+		vec[a].push_back(b);
+		vec[b].push_back(a);
 	}
-	dfs(start);
-	printf("\n");
-	bfs(start);
 
-	return 0;
+	dfs(v);
+	printf("\n");
+	q.push(v);
+	check2[v] = 1;
+	bfs();
 }
