@@ -30,8 +30,9 @@ typedef struct profile{
 		english = ths.english;
 		math = ths.math;
 	}
-}profile;
+};
 profile arr[100005];
+profile arr2[100005];
 
 // &을 사용하면 해당 값이 들어있는 주소까지 포함되어 해당 주소에 있는 값이 변경된다. 이걸 사용하지 않으면 그냥 해당 주소의 값만 들어가 해당 주소의 값은 바뀌지 않는다
 void swap(profile& first, profile& second)
@@ -57,20 +58,12 @@ bool compare(profile obj, profile pivot)
 				return true;
 			else if (obj.math == pivot.math)
 			{
-				char temp1[11];
-				char temp2[11];
-				for (int i = 0; i < 11; i++)
-				{
-					temp1[i] = tolower(obj.name[i]);
-					temp2[i] = tolower(pivot.name[i]);
-				}
-				if (strcmp(temp1, temp2) < 0)
+				if (strcmp(obj.name, pivot.name) < 0)
 					return true;
 			}
 		}
 	}
-	else
-		return false;
+	return false;
 }
 
 void quick(int start, int end)
@@ -80,20 +73,71 @@ void quick(int start, int end)
 
 	profile pivot = arr[start];
 	int loc=start;
-	int dest=start;
-	for (int i = start+1; i <= end; i++)
+	swap(arr[start], arr[end]);
+	for (int i = start; i < end; i++)
 	{
 		if (compare(arr[i], pivot))
 		{
-			dest = i;
 			swap(arr[i], arr[loc]);
 			loc++;
 		}
 	}
-	swap(arr[loc], arr[dest]);
+	swap(arr[loc], arr[end]);
 
 	quick(start, loc - 1);
 	quick(loc + 1, end);
+}
+
+void merge(int start, int end)
+{
+	if (start == end)
+	{
+		return;
+	}
+
+	int mid = (start + end) / 2;
+
+	merge(start, mid);
+	merge(mid + 1, end);
+
+	int i = start;
+	int j = mid + 1;
+	int q = 0;
+
+	while (i <= mid && j <= end)
+	{
+		if (compare(arr[i],arr[j]))
+		{
+			arr2[q] = arr[i];
+			++i;
+		}
+
+		else
+		{
+			arr2[q] = arr[j];
+			++j;
+		}
+		q++;
+	}
+
+	while (i <= mid)
+	{
+		arr2[q] = arr[i];
+		i++;
+		q++;
+	}
+
+	while (j <= end)
+	{
+		arr2[q] = arr[j];
+		j++;
+		q++;
+	}
+
+	for (int i = start; i <= end; i++)
+	{
+		arr[i] = arr2[i - start];
+	}
 }
 
 
@@ -107,7 +151,7 @@ int main()
 		scanf("%s %d %d %d", arr[i].name, &arr[i].korean, &arr[i].english, &arr[i].math);
 	}
 
-	quick(0, number - 1);
+	quick(0, number-1);
 
 	for (int i = 0; i < number; i++)
 	{

@@ -40,6 +40,7 @@ void bfs()
 	}
 }
 
+
 int main()
 {
 	int n, m, v;
