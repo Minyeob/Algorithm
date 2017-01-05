@@ -1,12 +1,25 @@
 #include <cstdio>
 #include <algorithm>
 #include <string.h>
+#include <queue>
+using namespace std;
 
+queue<int> q;
 int student[100001];
 int check[100001];
 int nowcheck[100001];
 bool result[100001];
 int num_result[100001];
+
+void bfs(int start)
+{
+	q.push(start);
+	check[start] = 1;
+	while (!q.empty())
+	{
+
+	}
+}
 
 void clear_array(int arr[], int size)
 {
@@ -18,29 +31,33 @@ void clear_array(int arr[], int size)
 
 void test(int start, int size)
 {	
-	if (check[student[start]])
-	{
-		check[start] = 1;
-		return;
-	}
-	check[start] = 1;
-	int now = start;
-	int next = student[start];
-	
+	int now, next=0;
+	now = start;
+	next = student[start];
+	check[now] = 1;
+	nowcheck[now] = 1;
 
-	while (!check[next])
+	while(!check[next])
 	{
-		check[next] = 1;
 		now = next;
+		check[next] = 1;
+		nowcheck[next] = 1;
 		next = student[next];
 	}
 
-	result[now] = true;
-	while (!result[next])
+	if (now == next)
+		result[now] = true;
+	else if (nowcheck[next] == 1)
 	{
-		result[next] = true;
-		next = student[next];
+		result[now] = true;
+		while (next != now)
+		{
+			result[next] = true;
+			next = student[next];
+		}
 	}
+
+	clear_array(nowcheck, size);
 }
 
 int main()
@@ -70,10 +87,9 @@ int main()
 				sum++;
 			}
 		}
+
 		num_result[i] = sum;
 		clear_array(check, student_number);
-		clear_array(student, student_number);
-		memset(result, false, sizeof(result));
 	}
 	for (int i = 0; i < case_count; i++)
 	{

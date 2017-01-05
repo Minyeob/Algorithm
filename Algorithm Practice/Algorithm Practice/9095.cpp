@@ -1,33 +1,23 @@
-#include <stdio.h>
+#include <cstdio>
 
-int array[12];
+int result[12];
 
 int main()
 {
-	array[0] = 0;
-	array[1] = 1;
-	array[2] = 2;
-	array[3] = 4;
-
-	for (int i = 4; i < 11; i++)
+	int t;
+	scanf("%d", &t);
+	
+	result[1] = 1;
+	result[2] = 2;
+	result[3] = 4;
+	for (int i = 4; i < 12; i++)
 	{
-		for (int j = i; j > 0; j--)
-		{
-			array[i] = array[i] + array[j];
-		}
+		result[i] = result[i - 1] + result[i - 2] + result[i - 3];
 	}
-
-	for(int i = 0; i < 11; i++)
-	{
-		printf("%d is %d \n", i,array[i]);
-	}
-
-	int number;
-	scanf("%d", &number);
-	for (int i = 0; i < number; i++)
+	for (int i = 0; i < t; i++)
 	{
 		int n;
 		scanf("%d", &n);
-		printf("%d\n", array[n]);
+		printf("%d\n", result[n]);
 	}
 }
