@@ -18,10 +18,12 @@ void push_sort(int loc)
 	while (loc>0)
 	{
 		if (v[loc] < v[loc / 2])
+		{
 			swap(loc, loc / 2);
+			loc = loc / 2;
+		}
 		else
 			break;
-		loc = loc / 2;
 	}
 }
 
@@ -36,23 +38,23 @@ void push(int a)
 void pop_sort()
 {
 	int loc = 1;
-	while (1)
+	while (loc*2<v.size())
 	{
 		int left = 0;
 		int right = 0;
-		if (loc * 2 < v_loc)
+		if (loc * 2 < v.size())
 			left = loc * 2;
-		if (loc * 2 + 1 < v_loc)
+		if (loc * 2 + 1 < v.size())
 			right = loc * 2 + 1;
 		
-		int small;
+		int small=0;
 
-		if (left < right)
+		if (v[left] < v[right])
 			small = left;
 		else
 			small = right;
 		
-		if (small != 0)
+		if (small!=0)
 		{
 			if (v[small] < v[loc])
 			{
@@ -60,11 +62,21 @@ void pop_sort()
 				loc = small;
 			}
 			else
-				break;
-			
+				break;	
 		}
 		else
 			break;
+	}
+
+	if (loc * 2 == v.size()-1)
+	{
+		if (loc * 2 < v.size())
+	
+		if (v[loc * 2] < v[loc])
+		{
+			swap(loc * 2, loc);
+			loc = loc * 2;
+		}
 	}
 }
 
@@ -75,7 +87,7 @@ void pop()
 	else
 	{
 		q.push(v[1]);
-		swap(1, v_loc-1);
+		swap(1, v.size()-1);
 		v.pop_back();
 		v_loc--;
 		pop_sort();
