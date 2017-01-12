@@ -1,72 +1,41 @@
-#include <stdio.h>
-#include <iostream>
+#include <cstdio>
 #include <math.h>
 using namespace std;
-int length[10000];
-int max_length = 1000000000;
+long long line[10001];
 
-int ten_dvide(int k,int n)
+long long binary_search(long long start,long long end,int k,int n)
 {
-	for (int i = max_length; i > 0; i = i / 10)
+	long long result=0;
+	while (start <= end)
 	{
-		int sum = 0;
-		for (int j = 0; j < k; j++)
+		long long sum = 0;
+		long long mid = (start + end) / 2;
+		for (int i = 0; i < k; i++)
 		{
-			int num = length[i] / max_length;
-			sum = sum + num;
+			if (line[i]>=mid)
+				sum = sum + line[i] / mid;
 		}
 		if (sum >= n)
-		{
-			return i;
-		}
+			start = mid+1;
+		else
+			end = mid-1;
+		if (sum == n)
+			result = mid;
 	}
-}
-
-int search(int k, int n,int start, int end)
-{
-	start = 1;
-	end = pow(2, 32) - 1;
-	
-	int mid = (start + end) / 2;
-	int sum = 0;
-	for (int j = 0; j < k; j++)
-	{
-		int num = length[j] / mid;
-		sum = sum + num;
-	}
-	if (sum < n)
-	{
-		search(k, n, mid + 1, end);
-	}
-	else if (sum > n)
-	{
-		search(k, n, start, mid);
-	}
-	else if (sum = n)
-	{
-		return mid;
-	}
+	return end;
 }
 
 int main()
 {
-	int k,n;
-	
-	cin >> k >> n;
-	int count = 0;
-	
-	
+	int k, n;
+	scanf("%d %d", &k, &n);
+
 	for (int i = 0; i < k; i++)
 	{
-			cin >> length[i];
+		scanf("%lld", &line[i]);
 	}
 
-	int start=ten_dvide(k, n);
-	int end = pow(2, 32) - 1;
-
-	search(k, n, start, end);
-
-	
-	
+	long long max = pow(2.0, 31) - 1;
+	long long length=binary_search(1, max, k, n);
+	printf("%lld", length);
 }
-

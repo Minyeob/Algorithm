@@ -4,11 +4,11 @@ using namespace std;
 vector<long long> tree;
 #define max_height 2000000000;
 
-long long find(long long min,long long max,long long goal)
+long long find(long long min, long long pastmid, long long max,long long goal)
 {
 	long long mid = (min + max) / 2;
-	printf("mid is %lld\n", mid);
-	printf("max is %lld\n", max);
+	if (mid == pastmid)
+		return mid;
 	long long length = 0;
 
 	for (int i = 0; i < tree.size(); i++)
@@ -18,10 +18,9 @@ long long find(long long min,long long max,long long goal)
 			length = length + (tree[i] - mid);
 		}
 	}
-	printf("length is %lld \n", length);
 	if (length > goal)
 	{
-		find(mid, max, goal);
+		find(mid, mid, max, goal);
 	}
 	else if (length == goal)
 	{
@@ -29,7 +28,7 @@ long long find(long long min,long long max,long long goal)
 	}
 	else
 	{
-		find(min, mid, goal);
+		find(min, mid, mid, goal);
 	}
 }
 
@@ -47,12 +46,12 @@ long long max_find(long long min, long long max, long long goal)
 	}
 	if (length == goal)
 	{
-		find(mid, max, goal);
+		find(mid, mid, max, goal);
 	}
 
 	else
 	{
-		find(min, mid, goal);
+		find(min, mid, mid, goal);
 	}
 }
 
@@ -71,7 +70,7 @@ int main()
 	long long min = 0;
 	long long max = 2000000000LL;
 	
-	long long height = find(min, max, m);
+	long long height = find(min, 0, max, m);
 	
 	min = height;
 
