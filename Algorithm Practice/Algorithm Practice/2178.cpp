@@ -1,33 +1,64 @@
 #include <cstdio>
+#include<queue>
+using namespace std;
 
 char map[101][101];
-int check[101][101];
-int x_plus[4] = { -1, 1, 0, 0 };
-int y_plus[4] = { 0, 0, -1, 1 };
+bool check[101][101];
+int x_plus[4] = { 1, 0, -1, 0 };
+int y_plus[4] = { 0, 1, 0, -1 };
 int final_length;
 
-int dfs(int x, int y,int n,int m,int length)
-{	
-	check[x][y] = 1;
-	length++;
-	printf("x is %d y is %d length is %d\n", x+1, y+1,length);
-	if (x == n - 1 && y == m - 1)
-	{
-		if (length < final_length)
-			final_length = length;
-		return final_length;
-	}
+typedef struct{
+	int x;
+	int y;
+	int distance;
+}point;
 
-	for (int i = 0; i < 4; i++)
+queue<point> q;
+
+void bfs(int x, int y,int n,int m,int length)
+{	
+	point p;
+	p.x = x;
+	p.y = y;
+	p.distance = length;
+	check[x][y] = 1;
+	q.push(p);
+	
+	while (!q.empty())
 	{
-		int next_x = x + x_plus[i];
-		int next_y = y + y_plus[i];
-		if (0<=next_x<n && 0<=next_y<m)
+		point now = q.front();
+		q.pop();
+		int x = now.x;
+		int y = now.y;
+		
+		if (x == n - 1 && y == m - 1)
 		{
-			if (map[next_x][next_y] =='1' && check[next_x][next_y] != 1)
-				dfs(next_x, next_y, n, m, length);
+			if (now.distance < final_length)
+			{
+				final_length = now.distance;
+			}
 		}
-	}
+
+		for (int i = 0; i < 4; i++)
+		{
+			int next_x = x + x_plus[i];
+			int next_y = y + y_plus[i];
+			point next;
+			next.x = next_x;
+			next.y = next_y;
+			next.distance = now.distance+1;
+
+			if (0 <= next_x && next_x< n && 0 <= next_y && next_y< m)
+			{
+				if (map[next_x][next_y] == '1' && check[next_x][next_y] == 0)
+				{
+					check[next_x][next_y] = 1;
+					q.push(next);
+				}
+			}
+		}
+	}	
 }
 
 int main()
@@ -39,16 +70,10 @@ int main()
 	{
 		scanf("%s", map[i]);
 	}
-	printf("-----------------------------\n");
-	for (int i = 0; i < n; i++)
-	{
-		printf("%s\n", map[i]);
-	}
 
-	printf("%c", map[0][2]);
-	int length = 0;
+	int length = 1;
 	final_length = 100000;
-	length=dfs(0, 0, n, m, length);
+	bfs(0, 0, n, m, length);
 
 	printf("%d", final_length);
 
