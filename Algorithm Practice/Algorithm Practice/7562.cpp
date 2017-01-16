@@ -3,8 +3,7 @@
 #include <string.h>
 using namespace std;
 
-int board[301][301];
-bool check[301][301];
+bool check[501][501];
 int result[100000];
 typedef struct{
 	int x;
@@ -24,7 +23,6 @@ int bfs(point n, point goal,int size)
 	while (!q.empty())
 	{
 		point now = q.front();
-		//printf("now x is %d now y is %d count is %d\n", now.x, now.y, now.count);
 		q.pop();
 
 		for (int i = 0; i < 8; i++)
@@ -51,6 +49,7 @@ int bfs(point n, point goal,int size)
 		}
 		
 	}
+	return 0;
 }
 
 int main()
@@ -59,23 +58,25 @@ int main()
 	scanf("%d", &t);
 
 	for (int i = 0; i < t; i++)
-	{
+	{		
+		memset(check, 0, sizeof(check));
 		int size;
 		scanf("%d", &size);
-		int x, y;
+		int x, y, nx, ny;
 		scanf("%d %d", &x, &y);
 		point now;
 		now.x = x;
 		now.y = y;
 		now.count = 0;
 		check[x][y] = 1;
-		scanf("%d %d", &x, &y);
+		scanf("%d %d", &nx, &ny);
 		point goal;
-		goal.x = x;
-		goal.y = y;
+		goal.x = nx;
+		goal.y = ny;
+		goal.count = 0;
 		int count = 0;
 
-		if (now.x == goal.x && now.y == now.y)
+		if (now.x == goal.x && now.y == goal.y)
 		{
 			count = 0;
 		}
@@ -83,17 +84,12 @@ int main()
 		{
 			count = bfs(now, goal, size);
 		}
-		result[i] = count;
-		memset(check, 0, sizeof(check));
+		printf("%d\n", count);
+
 
 		while (!q.empty())
 		{
 			q.pop();
 		}
-	}
-
-	for (int i = 0; i < t; i++)
-	{
-		printf("%d\n", result[i]);
 	}
 }
