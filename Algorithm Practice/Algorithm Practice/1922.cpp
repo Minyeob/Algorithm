@@ -1,38 +1,47 @@
 #include <cstdio>
 #include <string.h>
+#include <queue>
+using namespace std;
 int cost[1001][1001];
 bool visit[1001];
-int distance;
+int sum;
+int edge_count;
+int final_sum;
 
-void prim(int now,int n)
+void prim(int n)
 {
-	int min = 999999;
-	int loc = 0;
-	bool check = false;
-
-	for (int i = 1; i <= n; i++)
-	{
-		cost[i][now] = 0;
-	}
-
-	for (int i = 1; i <= n; i++)
-	{
-		if (cost[now][i] != 0 && cost[now][i] < min && visit[i]==0)
+	visit[1] = true;
+	for (int k = 1; k < n; k++)
+	{		
+		int distance = 0;
+		int loc = 0;
+		for (int i = 1; i <= n; i++)
 		{
-			min = cost[now][i];
-			loc = i;
-			printf("loc is %d min is %d\n",loc, min);
-			check = true;
+			if (visit[i] == true)
+			{
+				for (int j = 1; j <= n; j++)
+				{
+					if (visit[j] == false && cost[i][j] != 0)
+					{
+						//printf("from %d to %d is false and cost is %d \n", i,j, cost[i][j]);
+						if (distance == 0)
+						{
+							distance = cost[i][j];
+							loc = j;
+						}
+						else if (cost[i][j] < distance)
+						{
+							distance = cost[i][j];
+							loc = j;
+						}
+					}
+				}
+			}	
 		}
+		sum = sum + distance;
+		visit[loc] = true;
+		//printf("distance is %d and sum is %d\n", distance, sum);
 	}
-
-	if (check == false)
-		return;
-
-	distance = distance + min;
-	printf("dis is %d\n", distance);
-	visit[loc] = true;
-	prim(loc, n);
 }
 
 int main()
@@ -49,7 +58,7 @@ int main()
 		cost[a][b] = c;
 		cost[b][a] = c;
 	}	
-	visit[2] = true;
-	prim(2, n);
-	printf("%d", distance);
+
+	prim(n);
+	printf("%d", sum);
 }
