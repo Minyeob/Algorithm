@@ -6,27 +6,24 @@ int cost[10001][10001];
 bool visit[10001];
 
 struct node{
-	int start;
 	int next;
 	int cost;
 
 	node(){};
 	node(const node& temp)
 	{
-		this->start = temp.start;
 		this->next = temp.next;
 		this->cost = temp.cost;
 	};
 
 	void operator=(const node& temp)
 	{
-		this->start = temp.start;
 		this->next = temp.next;
 		this->cost = temp.cost;
 	}
 };
 
-node edge[100001];
+node edge[1000001];
 queue<node> q;
 int final_distance;
 
@@ -106,6 +103,7 @@ int pop(int loc)
 {
 	if (visit[edge[1].next] == 0)
 	{
+		q.push(edge[1]);
 		visit[edge[1].next] = true;
 		int distance = edge[1].cost;
 		//printf("selected from %d to %d cost is %d \n", edge[1].start, edge[1].next, edge[1].cost);
@@ -135,30 +133,39 @@ void prim(int start, int v, int e)
 	int length = 0;
 	int count = 0;
 	visit[start] = true;
-	int loc = start;
+	int loc = 1;
 
-	for (int i = 1; i < v; i++)
+	for (int i = 1; i <= v; i++)
 	{
+		if (cost[start][i] != 0)
+		{
+			node n;
+			n.cost = cost[start][i];
+			n.next = i;
+			loc = heap_push(n, loc);
+		}
+	}
+
+	loc=pop(loc);
+	//printf("distance is %d\n", final_distance);
+
+	for (int i = 2; i < v; i++)
+	{
+		node now = q.front();
+		q.pop();
+		int next = now.next;
+		//printf("next is %d\n", next);
 		for (int j = 1; j <= v; j++)
 		{
-			if (visit[j] == true)
+			if (cost[next][j] != 0)
 			{
-				for (int k = 1; k <= v; k++)
-				{
-					if (cost[j][k] != 0)
-					{
-						node n;
-						n.cost = cost[j][k];
-						n.next = k;
-						n.start = j;
-						loc = heap_push(n, loc);
-						//printf("from %d to %d cost is %d loc is %d\n", n.start, n.next, n.cost,loc);
-					}
-				}
+				node n;
+				n.cost = cost[next][j];
+				n.next = j;
+				loc = heap_push(n, loc);
 			}
 		}
-		loc = pop(loc);
-		loc = 1;
+		loc=pop(loc);
 		//printf("distance is %d\n", final_distance);
 	}
 }
