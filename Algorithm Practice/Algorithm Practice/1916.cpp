@@ -32,6 +32,7 @@ struct edge{
 	}
 };
 vector<vector<edge>> cost;
+vector<vector<int>> way;
 
 int dist[1001];
 bool check[1001];
@@ -72,6 +73,7 @@ int main()
 	int n, m;
 	scanf("%d %d", &n, &m);
 	cost.resize(n + 1);
+	way.resize(n + 1);
 
 	for (int i = 0; i < m; i++)
 	{
@@ -92,6 +94,7 @@ int main()
 		dist[i] = max;
 	}
 	dist[start_city] = 0;	
+	way[start_city].push_back(start_city);
 
 	int node = start_city;
 	for (int i = 1; i < n; i++)
@@ -114,11 +117,24 @@ int main()
 		for (int k = 0; k < cost[loc].size(); k++)
 		{
 			edge next = cost[loc][k];
-			if (dist[next.end]>dist[next.start] + next.cost)
+			if (dist[next.end] > dist[next.start] + next.cost)
+			{
 				dist[next.end] = dist[next.start] + next.cost;
+				way[next.end].clear();
+				for (int i = 0; i < way[loc].size(); i++)
+				{
+					way[next.end].push_back(way[loc][i]);
+				}
+				way[next.end].push_back(next.end);
+			}
 			//printf("to %d dist is %d  start dist is %d and cost is %d\n", next.end, dist[next.end],dist[next.start], next.cost);
 		}		
 	}
 
-	printf("%d", dist[destination]);
+	printf("%d\n", dist[destination]);
+	printf("%d\n", way[destination].size());
+	for (int i = 0; i < way[destination].size(); i++)
+	{
+		printf("%d ", way[destination][i]);
+	}
 }
