@@ -82,7 +82,7 @@ int main()
 	int sum = 0;
 	for (int i = 1; i <= max_loc; i++)
 	{
-		if (bar_array[i].y > bar_array[left].y)
+		if (bar_array[i].y >= bar_array[left].y)
 		{
 			int y = bar_array[left].y;
 			int x = bar_array[i].x - bar_array[left].x;
@@ -100,7 +100,7 @@ int main()
 	int right = n - 1;
 	for (int i = n-2; i >= max_loc; i--)
 	{
-		if (bar_array[i].y > bar_array[right].y)
+		if (bar_array[i].y >= bar_array[right].y)
 		{
 			int y = bar_array[right].y;
 			int x = (bar_array[right].x + 1) - (bar_array[i].x + 1);
