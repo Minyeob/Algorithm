@@ -28,15 +28,6 @@ int main()
 		point[i][i] = 1;
 	}
 
-	/*for (int i = 1; i <= number; i++)
-	{
-		for (int j = 1; j <= number; j++)
-		{
-			printf("%d", point[i][j]);
-		}
-		printf("\n");
-	}*/
-
 	for (int k = 1; k <= number; k++)
 	{
 		for (int i = 1; i <= number; i++)
@@ -80,13 +71,4 @@ int main()
 		if (rank[i] == min)
 			printf("%d ", i);
 	}
-
-	/*for (int i = 1; i <= number; i++)
-	{
-		for (int j = 1; j <= number; j++)
-		{
-			printf("%d", point[i][j]);
-		}
-		printf("\n");
-	}*/
 }
