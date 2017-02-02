@@ -1,8 +1,47 @@
 #include <cstdio>
+#include <algorithm>
 
 int people[50001];
-int sum[50001];
 int maxsum;
+
+struct train{
+	int sum;
+	int loc;
+
+	train(){};
+	train(const train& temp)
+	{
+		sum = temp.sum;
+		loc = temp.loc;
+	}
+
+	void operator=(const train& temp)
+	{
+		sum = temp.sum;
+		loc = temp.loc;
+	}
+
+	bool operator<(const train& temp)
+	{
+		return sum < temp.sum;
+	}
+
+	bool operator==(const train& temp)
+	{
+		if (sum == temp.sum && loc == temp.loc)
+			return true;
+		else
+			return false;
+	}
+	bool operator!=(const train& temp)
+	{
+		if (sum == temp.sum && loc == temp.loc)
+			return false;
+		else
+			return true;
+	}
+};
+train t[50001];
 
 int main()
 {
@@ -21,51 +60,63 @@ int main()
 		int temp = 0;
 		if (i + capable <= n)
 		{
-			for (int j = i; j < capable; j++)
+			for (int j = i; j < i+capable; j++)
 			{
 				temp = temp + people[j];
 			}
-			sum[i] = temp;
+			train tra;
+			tra.sum = temp;
+			tra.loc = i;
+			t[i] = tra;
 		}
 	}
+	std::sort(t, t + n - capable + 1);
 
-	int result = 0;
-	int max = 0;
-	int maxloc = 0;
-	int secondloc = 0;
-	for (int i = 0; i <= n - capable; i++)
+	int loc = 0;
+	for (int z= n - capable; z > n - (2 * capable); z--)
 	{
-		max = sum[i];
-		maxloc = i;
+			train first = t[z];
+			//printf("first sum is %d loc is %d\n", first.sum,first.loc);
+			train second = first;
+			train third = first;
+			int startloc = z - 1;
+			//printf("start loc is %d\n", startloc);
+			for (int k = 0; k < 3; k++)
+			{
+				for (int i = startloc; i >= 0; i--)
+				{
+					if (t[i].loc <= first.loc - capable || t[i].loc >= first.loc + capable)
+					{
+						second = t[i];
+						//printf("second is %d loc is %d\n", second.sum,second.loc);
+						startloc = i - 1;
+						break;
+					}
+				}
 
-		result = result + max;
-		max = 0;
-		for (int i = 0; i <= n - capable; i++)
-		{
-			if (i <= maxloc - capable && i >= maxloc + capable)
-			{
-				if (sum[i] > max)
+				if (first != second)
 				{
-					max = sum[i];
-					secondloc = i;
+					for (int i = startloc; i >= 0; i--)
+					{
+						if (t[i].loc <= first.loc - capable || t[i].loc >= first.loc + capable)
+						{
+							if (t[i].loc <= second.loc - capable || t[i].loc >= second.loc + capable)
+							{
+								third = t[i];
+								//printf("third is %d loc is %d\n", third.sum, third.loc);
+								break;
+							}
+						}
+					}
+				}
+
+				if (first != second && first != third)
+				{
+					int sum= first.sum + second.sum + third.sum;
+					if (sum > maxsum)
+						maxsum = sum;
 				}
 			}
-		}
-		result = result + max;
-		max = 0;
-		for (int i = 0; i <= n - capable; i++)
-		{
-			if (i <= maxloc - capable && i >= maxloc + capable && i <= secondloc - capable && i >= secondloc + capable)
-			{
-				if (sum[i] > max)
-				{
-					max = sum[i];
-				}
-			}
-		}
-		result = result + max;
-		sum[maxloc] = 0;
-		if (result > maxsum)
-			maxsum = result;
 	}
+	printf("%d", maxsum);
 }
