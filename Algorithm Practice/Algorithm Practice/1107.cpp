@@ -1,120 +1,141 @@
 #include <cstdio>
-#include <math.h>
+#include <algorithm>
 
-int check[20];
-int num[70];
+bool count[500001];
+int number[11];
+bool check[11];
 
-int save(int n)
+int abs(int n)
 {
-	int count=0;
+	if (n >= 0)
+		return n;
+	if (n < 0)
+		return -n;
+}
+
+bool find(int n)
+{
+	int d = n % 10;
+	if (check[d] == true)
+		return false;
 	while (n != 0)
 	{
-		int temp = n % 10;
-		num[count] = temp;
-		count++;
+		d = n % 10;
+		if (check[d] == true)
+			return false;
 		n = n / 10;
 	}
-	return count;
-}
-
-int load(int size)
-{
-	int n=0;
-	for (int i = 0; i < size; i++)
-	{
-		n = n * 10 + check[i];
-	}
-	return n;
-}
-
-int find_minus(int n, int count)
-{
-	int final=count;
-	int correct=0;
-	int size=save(n);
-	printf("n is %d\n",n);
-	for (int i = 0; i < size; i++)
-	{
-		if (check[num[i]])
-		{
-			correct = 1;
-			int j = size - 1;
-			while (j>=0)
-			final=find_minus(n - 1, count + pow(10*1.0,(size-1-i)));
-		}
-	}
-	if (correct == 0)
-	{
-		return count;
-	}
-	else
-		return final;
-}
-
-int find_plus(int n, int count)
-{
-	int final = count;
-	int correct = 0;
-	int size=save(n);
-	for (int i = 0; i < size; i++)
-	{
-		if (check[num[i]])
-		{
-			correct = 1;
-			final = find_plus(n + 1, count + 1);
-		}
-	}
-	if (correct == 0)
-	{
-		return count;
-	}
-	else
-		return final;
-}
-
-int find_100(int n)
-{
-	int count = 0;
-	if (n > 100)
-		count = n - 100;
-	else if (n == 100)
-		count = 0;
-	else
-		count = 100 - n;
-	return count;
+	return true;
 }
 
 int main()
 {
+	count[100] = 0;
+	int goal;
+	scanf("%d", &goal);
 	int n;
 	scanf("%d", &n);
-	int m;
-	scanf("%d", &m);
-	for (int i = 0; i < m; i++)
+
+	for (int i = 0; i < n; i++)
 	{
-		int a;
-		scanf("%d", &a);
-		check[a] = 1;
+		int temp;
+		scanf("%d", &temp);
+		check[temp] = true;
 	}
 
-	int count = 0;
-	count = save(n);
-	int final1 = count;
-	int final2 = count;
-	int final3 = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		int min = 1;
+		for (int j = i; j < 10; j++)
+		{
+			//printf("j is %d\n", j);
+			int temp = j;
+			if (j >= 10)
+				temp = j - 10;
+			if (check[temp] == false)
+				break;
+			else
+				min = min + 1;
+		}
+
+		int cc = 1;
+		for (int j = i; j >= 0; j--)
+		{
+			//printf("-----j is %d\n", j);
+			int temp=j;
+			if (j < 0)
+				temp = j + 10;
+			if (check[temp] == false)
+			{
+				if (cc < min)
+					min = cc;
+				break;
+			}
+			else
+				cc = cc + 1;
+		}
+
+		number[i] = min;
+	}	
 	
-	final1 = find_minus(n, count);
-	final2 = find_plus(n, count);
-	final3 = find_100(n);
+	int sum = abs(goal - 100);
+	//printf("sum2 is %d\n", sum2);
 
-	int small = 0;
-	if (final1 < final2)
-		small = final1;
-	else
-		small = final2;
+	int sum2 = 500001;
+	int sum3 = 500001;
+	int avail = 0;
+	int multi = 1;
+	int origin = goal;
+	int origin2 = goal;
+	bool good = false;
+	while (!good)
+	{
+		good = find(origin);
+		if (good == false)
+			origin = origin - 1;
+		if (origin < 0)
+			break;
+	}
+	if (origin >= 0 && good == true)
+	{
+		sum2 = abs(origin - goal);
+		int size = 0;
+		if (origin == 0)
+			size = 1;
+		while (origin != 0)
+		{
+			origin=origin / 10;
+			size = size + 1;
+		}
+		//printf("size is %d\n", size);
+		sum2 = sum2 + size;
+	}
+	good = false;
+	while (!good)
+	{
+		good = find(origin2);
+		if (good == false)
+			origin2 = origin2 + 1;
+		if (origin2 > 1000000)
+			break;
+	}
+	if (origin2 >= 0 && good == true)
+	{
+		sum3 = abs(origin2 - goal);
+		int size = 0;
+		if (origin2 == 0)
+			size = 1;
+		while (origin2 != 0)
+		{
+			origin2=origin2 / 10;
+			size = size + 1;
+		}
+		sum3 = sum3 + size;
+	}
 
-	if (small > final3)
-		small = final3;
+	//printf("sum2 is %d sum3 is %d\n", sum2, sum3);
 
-	printf("%d", small);
+	int result = std::min(sum, sum2);
+	result = std::min(result, sum3);
+	printf("%d", result);
 }
