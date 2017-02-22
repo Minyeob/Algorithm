@@ -1,38 +1,32 @@
-#include <stdio.h>
-#include <iostream>
-using namespace std;
+#include <cstdio>
+#define max 1000000000;
 
-long long int next(int z, long long int count, int loc,int number)
-{
-	loc = loc + 1;
-	if (loc > number)
-		return count;
-	int a = z + 1;
-	int b = z - 1;
-
-	if (a == 0 || a == 9)
-		count = count + 1;
-	else
-		count = count + 2;
-	if (b == 0 || b == 9)
-		count = count + 1;
-	else
-		count = count + 2;
-
-	next(a, count);
-	next(b, count);
-}
+long long final[101][10];
 
 int main()
 {
 	int n;
 	scanf("%d", &n);
-	long long int count = 0;
-	int loc = 1;
-	for (int i = 1; i < 10; i++)
+
+	for (int i = 1; i <= 9; i++)
 	{
-		next(i, count, loc, n);
+		final[1][i] = 1;
+	}
+	for (int i = 2; i <= n; i++)
+	{
+		final[i][0] = final[i - 1][1]%max;
+		for (int j = 1; j < 9; j++)
+		{
+			final[i][j] = (final[i - 1][j - 1] + final[i - 1][j + 1])%max;
+		}
+		final[i][9] = final[i - 1][8]%max;
 	}
 
-	printf("%ld", count);
+	long long sum = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		sum = (sum + final[n][i]) % max;
+	}
+
+	printf("%lld", sum);
 }
