@@ -1,37 +1,46 @@
 #include <cstdio>
 
-long long num[13];
+int score[10];
 
-void fac(int n)
+int fac(int n)
 {
-	num[1] = 1;
+	int count = 0;
 	for (int i = 2; i <= n; i++)
 	{
-		num[i] = num[i - 1] * i;
+		int num = i;
+		int div2 = num % 2;
+		if (div2 == 0)
+		{
+			while (div2 == 0)
+			{
+				score[2]++;
+				num = num / 2;
+				div2 = num % 2;
+			}
+		}
+		int div5 = num % 5;
+		if (div5 == 0)
+		{
+			while (div5 == 0)
+			{
+				score[5]++;
+				num = num / 5;
+				div5 = num % 5;
+			}
+		}
 	}
+	int min = score[2];
+	if (min > score[5])
+		min = score[5];
+
+	return min;
 }
 
 int main()
 {
 	int n;
 	scanf("%d", &n);
-	fac(n);
-	num[0] = 1;
-
-	long long temp = num[n];
-	//printf("%lld",temp);
-
-	int count = 0;
-	while (temp > 0)
-	{
-		int div = temp % 10;
-		if (div == 0)
-		{
-			count++;
-			temp = temp / 10;
-		}
-		else
-			break;
-	}
+	int count=fac(n);
+	
 	printf("%d", count);
 }
