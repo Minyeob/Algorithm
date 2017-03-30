@@ -30,7 +30,7 @@ int main()
 				start = start + 1;
 				end = end - 1;
 			}
-			if (check == true)
+			if (check == true)*
 			{
 				int count = 1;
 				if (j > 0)
