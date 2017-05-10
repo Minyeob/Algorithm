@@ -8,17 +8,16 @@ char input[15];
 int main()
 {
 	int l, c;
-	scanf("%d %d", &l, &c);
+	scanf("%d %d ", &l, &c);
 
 	for (int i = 0; i < c; i++)
 	{
 		scanf(" %c", &input[i]);
 	}
 
-	for (int i = 0; i < c; i++)
-		printf("%d  %c \n", i,input[i]);
-
 	sort(input, input + c);
 	for (int i = 0; i < c; i++)
 		printf("%d  %c \n", i,input[i]);
+
+
 }
