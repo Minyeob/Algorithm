@@ -555,5 +555,17 @@
     <ClCompile Include="1451.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="summer_coding_예선.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="summer_coding 2.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="10819.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="10971.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
