@@ -1,55 +1,30 @@
-#include <stdio.h>
-#include <iostream>
+#include <cstdio>
+#include <queue>
 using namespace std;
-int array[1000000];
+
+
+queue<pair<int, int>> q;
 
 int main()
 {
-	array[0] = 0;
-	array[1] = 0;
-	array[2] = 1;
-	array[3] = 1;
-
 	int n;
 	scanf("%d", &n);
-	
-	for (int i = 4; i <= n;i++)
+
+	q.push(make_pair(n,0));
+
+	while (!q.empty())
 	{
-		if ((i % 3) == 0)
+		pair<int, int> temp = q.front();
+		if (temp.first == 1)
 		{
-			int z = i / 3;
-			array[i] = 1 + array[z];
+			printf("%d", temp.second);
+			break;
 		}
-		else if ((i % 2) == 0)
-		{
-			int q = i / 2;
-			int count = 1 + array[q];
-			int w = i - 1;
-			int count2 = 1 + array[w];
-			int e = i - 2;
-			int count3 = 2 + array[e];
-			
-			int min = count;
-			if (min > count2)
-				min = count2;
-			if (min > count3)
-				min = count3;
-
-			array[i] = min;
-		}
-		else
-		{
-			int w = i - 1;
-			int count2 = 1 + array[w];
-			int e = i - 2;
-			int count3 = 2 + array[e];
-
-			int min = count2;
-			if (min > count3)
-				min = count3;
-
-			array[i] = min;
-		}	
+		if (temp.first % 3 == 0)
+			q.push(make_pair(temp.first / 3, temp.second + 1));
+		if (temp.first % 2 == 0)
+			q.push(make_pair(temp.first / 2, temp.second + 1));
+		if (temp.first % 3 == 0)
+			q.push(make_pair(temp.first / 3, temp.second + 1));
 	}
-	printf("%d", array[n]);
 }
