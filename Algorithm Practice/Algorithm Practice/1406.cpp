@@ -1,70 +1,87 @@
-#include <stdio.h>
-char str[1000000];
-char order[100];
+#include <cstdio>
+#include <stack>
+#include <cstring>
+using namespace std;
+stack<char> left;
+stack<char> right;
+char input[1000000];
+char temp[10];
 
 int main()
-{	
-	long long int number;
-	int cursor;
-	int length;
-	number = scanf("%s", str);
-	for (int i = 0; i < 100000; i++)
+{
+	scanf("%s", input);
+	int len = strlen(input);
+	for (int i = 0; i < len; i++)
 	{
-		if (str[i] == NULL)
-		{
-			cursor = i;
-			length = i;
-			break;
-		}
+		left.push(input[i]);
 	}
-	scanf("%lld", &number);
-	fflush(stdin);
+	int n;
+	scanf("%d", &n);
+	//printf("n is %d \n", n);
+	fgets(temp, sizeof(temp),stdin);
 
-	for (int i = 0; i < number; i++)
+	for (int j = 0; j < n; j++)
 	{
-		gets(order);
-		if (order[0] == 'L')
+		fgets(temp, sizeof(temp), stdin);
+		//printf("temp is %s \n", temp);
+		
+		//수정문자가 L일때
+		if (temp[0] == 'L')
 		{
-			if (cursor == 0)
-				continue;
-			else
-				cursor--;
-		}
-
-		else if (order[0] == 'D')
-		{
-			if (cursor == length)
-				continue;
-			else
-				cursor++;
-		}
-
-		else if (order[0] == 'B')
-		{
-			if (cursor == 0)
-				continue;
-			else
-			{ 
-				for (int i = cursor - 1; i < length - 1; i++)
-				{
-					str[i] = str[i + 1];
-				}
-				str[cursor] = NULL;
-				cursor--;
-				length--;
+			if (!left.empty())
+			{
+				char x = left.top();
+				left.pop();
+				right.push(x);
 			}
 		}
 
-		else if (order[0] == 'P')
+		//수정문자가 R일때
+		if (temp[0] == 'D')
 		{
-			for (int i = length; i > cursor; i--)
-				str[i] = str[i - 1];
-			str[cursor] = order[2];
-			cursor++;
-			length++;
+			if (!right.empty())
+			{
+				char x = right.top();
+				right.pop();
+				left.push(x);
+			}
 		}
-		else;
+
+		//수정문자가 B일때
+		if (temp[0] == 'B')
+		{
+			if (!left.empty())
+			{
+				left.pop();
+			}
+		}
+
+		//수정문자가 P일때
+		if (temp[0] == 'P')
+		{
+			left.push(temp[2]);
+		}
 	}
 
-	printf("%s", str);
+	stack<char> final;
+	while (!left.empty())
+	{
+		char x = left.top();
+		left.pop();
+		final.push(x);
+	}
+
+	while (!final.empty())
+	{
+		char x = final.top();
+		final.pop();
+		printf("%c", x);
+	}
+
+	while (!right.empty())
+	{
+		char x = right.top();
+		right.pop();
+		printf("%c", x);
+	}
 }
