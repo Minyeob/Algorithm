@@ -1,11 +1,28 @@
 #include <cstdio>
+#include <vector>
+#include <stack>
+using namespace std;
+vector < vector<int>> v;
+stack<pair<int, int>> sta;
+bool check[20][20];
 
-int board[6][20][20];
-int max;
-void left(int n, int now);
-void up(int n, int now);
-void down(int n, int now);
-void right(int n,int now)
+int final;
+void left(int n, int now, vector<vector<int>> in);
+void up(int n, int now, vector<vector<int>> in);
+void down(int n, int now, vector<vector<int>> in);
+
+void show(int n,vector<vector<int>> ve)
+{
+	int len = ve.size();
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			printf("%d ", ve[i][j]);
+		printf("\n");
+	}
+}
+
+void right(int n, int now,vector<vector<int>> in)
 {
 	if (now == 5)
 	{
@@ -13,72 +30,59 @@ void right(int n,int now)
 		{
 			for (int j = 0; j < n; j++)
 			{
-				if (board[5][i][j] > max)
-					max = board[5][i][j];
-			}
-		}
-		return;
-	}
-
-	for (int i = 0; i < n; i++)
-	{
-		//확인하고 점수 합치기
-		for (int j = 0; j < n-1; j++)
-		{
-			int cur = board[now][i][j];
-			if (cur != 0)
-			{
-				board[now + 1][i][j] = cur;
-				for (int k = j + 1; k < n; k++)
+				if (in[i][j] > final)
 				{
-					int next = board[now][i][k];
-					if (next == 0)
-					{
-						board[now + 1][i][k] = cur;
-						board[now + 1][i][k - 1] = 0;
-					}
-					else
-					{
-						if (cur == next)
-						{
-							board[now + 1][i][k] = cur + next;
-							j = j + 1;
-							break;
-						}
-						else
-							break;
-					}
+					final = in[i][j];
+					show(n, in);
 				}
 			}
 		}
 
-		//마지막 밀기
+		return;
+	}
+	vector<vector<int>> arr;
+	arr = in;
+
+	for (int i = 0; i < n; i++)
+	{
 		for (int j = 0; j < n - 1; j++)
 		{
-			int cur = board[now+1][i][j];
-			if (cur != 0)
+			if (arr[i][j] == 0)
+				continue;
+			if (arr[i][j + 1] == 0)
 			{
-				for (int k = j + 1; k < n; k++)
+				arr[i][j + 1] = arr[i][j];
+				arr[i][j] = 0;
+			}
+			else if (arr[i][j] == arr[i][j + 1] && check[i][j]==false)
+			{
+				arr[i][j + 1] = arr[i][j] * 2;
+				if (arr[i][j + 1] == 128)
 				{
-					int next = board[now+1][i][k];
-					if (next == 0)
-					{
-						board[now + 1][i][k] = cur;
-						board[now + 1][i][k - 1] = 0;
-					}
-					else
-						break;
+					printf("after right now is %d\n", now + 1);
+					show(n, in);
+					show(n, arr);
 				}
+				arr[i][j] = 0;
+				check[i][j + 1] = true;
+				sta.push(make_pair(i, j + 1));
 			}
 		}
 	}
-	left(n, now + 1);
-	right(n, now + 1);
-	up(n, now + 1);
-	down(n, now + 1);
+	while (!sta.empty())
+	{
+		pair<int, int> temp = sta.top();
+		check[temp.first][temp.second] = false;
+		sta.pop();
+	}
+
+	left(n, now + 1, arr);
+	right(n, now + 1, arr);
+	up(n, now + 1, arr);
+	down(n, now + 1, arr);
 }
 
-void left(int n, int now)
+void left(int n, int now, vector<vector<int>> in)
 {
 	if (now == 5)
 	{
@@ -86,74 +90,64 @@ void left(int n, int now)
 		{
 			for (int j = 0; j < n; j++)
 			{
-				if (board[5][i][j] > max)
-					max = board[5][i][j];
+				if (in[i][j] > final)
+				{
+					final = in[i][j];
+					show(n, in);
+				}
 			}
 		}
+
 		return;
 	}
+	vector<vector<int>> arr;
+	arr = in;
 	for (int i = 0; i < n; i++)
 	{
-		//확인하고 점수 합치기
-		for (int j = n; j > 0; j--)
-		{
-			//printf("i is %d j is %d now is %d\n",i, j,now);
-			int cur = board[now][i][j];
-			//printf("cur is %d \n", cur);
-			if (cur != 0)
-			{
-				board[now + 1][i][j] = cur;
-				for (int k = j - 1; k >= 0; k--)
-				{
-					int next = board[now][i][k];
-					if (next == 0)
-					{
-						board[now + 1][i][k] = cur;
-						board[now + 1][i][k + 1] = 0;
-					}
-					else
-					{
-						if (cur == next)
-						{
-							board[now + 1][i][k] = cur + next;
-							//printf("sum is %d \n", board[now + 1][i][k]);
-							j = j - 1;
-							break;
-						}
-						else
-							break;
-					}
-				}
-			}
-		}
+		for (int j = 0; j < n; j++)
+			check[i][j] = 0;
+	}
 
-		//마지막 밀기
-		for (int j = n; j > 0; j--)
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = n-1; j > 0; j--)
 		{
-			int cur = board[now + 1][i][j];
-			if (cur != 0)
+			if (arr[i][j] == 0)
+				continue;
+			if (arr[i][j - 1] == 0)
 			{
-				for (int k = j - 1; k >= 0; k--)
+				arr[i][j - 1] = arr[i][j];
+				arr[i][j] = 0;
+			}
+			else if (arr[i][j] == arr[i][j - 1] && check[i][j] == false)
+			{
+				arr[i][j - 1] = arr[i][j] * 2;
+				if (arr[i][j - 1] == 128)
 				{
-					int next = board[now + 1][i][k];
-					if (next == 0)
-					{
-						board[now + 1][i][k] = cur;
-						board[now + 1][i][k + 1] = 0;
-					}
-					else
-						break;
+					printf("after left now is %d\n", now + 1);
+					show(n, in);
+					show(n, arr);
 				}
+				arr[i][j] = 0;
+				check[i][j - 1] = true;
+				sta.push(make_pair(i, j - 1));
 			}
 		}
 	}
-	left(n, now + 1);
-	right(n, now + 1);
-	up(n, now + 1);
-	down(n, now + 1);
+	while (!sta.empty())
+	{
+		pair<int, int> temp = sta.top();
+		check[temp.first][temp.second] = false;
+		sta.pop();
+	}
+
+	left(n, now + 1, arr);
+	right(n, now + 1, arr);
+	up(n, now + 1, arr);
+	down(n, now + 1, arr);
 }
 
-void down(int n, int now)
+void down(int n, int now, vector<vector<int>> in)
 {
 	if (now == 5)
 	{
@@ -161,73 +155,58 @@ void down(int n, int now)
 		{
 			for (int j = 0; j < n; j++)
 			{
-				if (board[5][i][j] > max)
-					max = board[5][i][j];
+				if (in[i][j] > final)
+				{
+					final = in[i][j];
+					show(n, in);
+				}
 			}
 		}
+
 		return;
 	}
+	vector<vector<int>> arr;
+	arr = in;
 	for (int i = 0; i < n; i++)
 	{
-		//확인하고 점수 합치기
-		for (int j = 0; j < n - 1; j++)
-		{
-			//printf("i is %d j is %d now is %d\n", i, j, now);
-			int cur = board[now][j][i];
-			//printf("cur is %d \n", cur);
-			if (cur != 0)
-			{
-				board[now + 1][j][i] = cur;
-				for (int k = j + 1; k < n; k++)
-				{
-					int next = board[now][k][i];
-					if (next == 0)
-					{
-						board[now + 1][k][i] = cur;
-						board[now + 1][k-1][i] = 0;
-					}
-					else
-					{
-						if (cur == next)
-						{
-							board[now + 1][k][i] = cur + next;
-							j = j + 1;
-							break;
-						}
-						else
-							break;
-					}
-				}
-			}
-		}
+		for (int j = 0; j < n; j++)
+			check[i][j] = 0;
+	}
 
-		//마지막 밀기
-		for (int j = 0; j < n - 1; j++)
+	for (int i = 0; i < n-1; i++)
+	{
+		for (int j = 0; j < n; j++)
 		{
-			int cur = board[now + 1][j][i];
-			if (cur != 0)
+			if (arr[i][j] == 0)
+				continue;
+			if (arr[i+1][j] == 0)
 			{
-				for (int k = j + 1; k < n; k++)
-				{
-					int next = board[now + 1][k][i];
-					if (next == 0)
-					{
-						board[now + 1][k][i] = cur;
-						board[now + 1][k-1][i] = 0;
-					}
-					else
-						break;
-				}
+				arr[i+1][j] = arr[i][j];
+				arr[i][j] = 0;
+			}
+			else if (arr[i][j] == arr[i+1][j] && check[i][j] == false)
+			{
+				arr[i+1][j] = arr[i][j] * 2;
+				arr[i][j] = 0;
+				check[i+1][j] = true;
+				sta.push(make_pair(i+1, j));
 			}
 		}
 	}
-	left(n, now + 1);
-	right(n, now + 1);
-	up(n, now + 1);
-	down(n, now + 1);
+	while (!sta.empty())
+	{
+		pair<int, int> temp = sta.top();
+		check[temp.first][temp.second] = false;
+		sta.pop();
+	}
+
+	left(n, now + 1, arr);
+	right(n, now + 1, arr);
+	up(n, now + 1, arr);
+	down(n, now + 1, arr);
 }
 
-void up(int n, int now)
+void up(int n, int now, vector<vector<int>> in)
 {
 	if (now == 5)
 	{
@@ -235,84 +214,75 @@ void up(int n, int now)
 		{
 			for (int j = 0; j < n; j++)
 			{
-				if (board[5][i][j] > max)
-					max = board[5][i][j];
-			}
-		}
-		return;
-	}
-	for (int i = 0; i < n; i++)
-	{
-		//확인하고 점수 합치기
-		for (int j = n; j > 0; j--)
-		{
-			int cur = board[now][j][i];
-			if (cur != 0)
-			{
-				board[now + 1][j][i] = cur;
-				for (int k = j - 1; k >= 0; k--)
-				{
-					int next = board[now][k][i];
-					if (next == 0)
-					{
-						board[now + 1][k][i] = cur;
-						board[now + 1][k+1][i] = 0;
-					}
-					else
-					{
-						if (cur == next)
-						{
-							board[now + 1][k][i] = cur + next;
-							j = j - 1;
-							break;
-						}
-						else
-							break;
-					}
-				}
+				if (in[i][j] > final)
+					final = in[i][j];
 			}
 		}
 
-		//마지막 밀기
-		for (int j = n; j > 0; j--)
+		return;
+	}
+	vector<vector<int>> arr;
+	arr = in;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			check[i][j] = 0;
+	}
+
+	for (int i = n-1; i > 0; i--)
+	{
+		for (int j = 0; j < n; j++)
 		{
-			int cur = board[now + 1][j][i];
-			if (cur != 0)
+			if (arr[i][j] == 0)
+				continue;
+			if (arr[i-1][j] == 0)
 			{
-				for (int k = j - 1; k >= 0; k--)
-				{
-					int next = board[now + 1][k][i];
-					if (next == 0)
-					{
-						board[now + 1][k][i] = cur;
-						board[now + 1][k+1][i] = 0;
-					}
-					else
-						break;
-				}
+				arr[i-1][j] = arr[i][j];
+				arr[i][j] = 0;
+			}
+			else if (arr[i][j] == arr[i-1][j] && check[i][j] == false)
+			{
+				arr[i-1][j] = arr[i][j] * 2;
+				arr[i][j] = 0;
+				check[i-1][j] = true;
+				sta.push(make_pair(i-1, j));
 			}
 		}
 	}
-	left(n, now + 1);
-	right(n, now + 1);
-	up(n, now + 1);
-	down(n, now + 1);
+	while (!sta.empty())
+	{
+		pair<int, int> temp = sta.top();
+		check[temp.first][temp.second] = false;
+		sta.pop();
+	}
+
+	left(n, now + 1, arr);
+	right(n, now + 1, arr);
+	up(n, now + 1, arr);
+	down(n, now + 1, arr);
 }
+
 
 int main()
 {
 	int n;
 	scanf("%d", &n);
+	v.resize(n + 1);
 
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < n; j++)
-			scanf("%d", &board[0][i][j]);
+		{
+			int t;
+			scanf("%d", &t);
+			v[i].push_back(t);
+		}
 	}
-	left(n, 0);
-	right(n, 0);
-	up(n, 0);
-	down(n, 0);
 
-	printf("%d", max);
+	left(n, 0, v);
+	right(n, 0, v);
+	up(n, 0, v);
+	down(n, 0, v);
+
+	printf("%d", final);
 }
